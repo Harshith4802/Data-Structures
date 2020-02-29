@@ -6,34 +6,25 @@ struct dnaMolecule{
 	char link;					//For storing the values of nucleotides of Beta chain
 	struct dnaMolecule* next;
 };
-
-//~ struct DNAid
-//~ {
-	//~ int id;
-	//~ struct 
-	//~ struct dnaMolecule* head;
-//~ };
-
-
 	
 int check(char x){   //for checking if the value of nucleotide is valid i.e A or G or T or C
-	if(x == 'A' || x =='C' || x =='G' || x =='T'){
+	if(x == 'A' || x =='C' || x =='G' || x =='T')
 		return 1;
-	}else{
+	else
 		return 0;	
-	}
+	
 }
 
 char comp(char x){    //For finding the complement of given nucleotide value
-	if(x == 'A'){
+	if(x == 'A')
 		return 'T';
-	}else if(x == 'C'){
+	else if(x == 'C')
 		return 'G';
-	}else if(x == 'G'){
+	else if(x == 'G')
 		return 'C';
-	}else if(x == 'T'){
+	else if(x == 'T')
 		return 'A';
-	}else{
+	else{
 		printf("Error");
 		return 'E';
 		} 
@@ -54,7 +45,7 @@ dna createdna(int i,char s){   //for creating a dna molecule
 	for( int j = 0;j<i;j++){
 	
 		temp = (dna)malloc(sizeof(struct dnaMolecule));
-		printf("Enter Nucleotide %d value:",j+1);
+		printf("Enter Nucleotide %d value(A or G or T or C):",j+1);
 		scanf(" %c",&c);
 		if (check(c) == 0){					//only allowing A or G or T or C
 			
@@ -64,12 +55,12 @@ dna createdna(int i,char s){   //for creating a dna molecule
 		
 		} else { 
 		
-			if (s == 'A'){
+			if (s == 'A'){				//Inserting the values of nucleotide in alpha chain
 		
 				temp->data = c;
 				temp->link = comp(c);
 				
-			} else if (s == 'B'){
+			} else if (s == 'B'){		//Inserting the values of nucleotide in beta chain
 		 
 				temp->data = comp(c);
 				temp->link = c;
@@ -77,12 +68,12 @@ dna createdna(int i,char s){   //for creating a dna molecule
 			} 
 		} 
 		
-		if ( head == NULL){
+		if ( head == NULL){				//If dna has no nucleotides yet 
 		
 			head = temp;
 			add = head;
 		
-		}  else {
+		}  else {						//If dna already has some nucleotides
 		
 			add->next = temp;
 			add = add->next;
@@ -94,25 +85,25 @@ dna createdna(int i,char s){   //for creating a dna molecule
 
 } 
 
-void printdna(dna list)			//for printing the DNA molecule
+void printdna(dna head)			//for printing the DNA molecule
 {	
-	dna temp = list;
-	dna temp2 = list;
-	dna temp3 = list;
-
+	dna temp = head;
+	
 	printf("\n");
-	printf("%c",temp3->data);
-	temp3 = temp3->next;
-	while(temp3 != NULL){
-		printf("--%c",temp3->data);			//for printing alpha chain
-		temp3 = temp3->next;
+	printf("%c",temp->data);
+	temp = temp->next;
+	while(temp != NULL){
+		printf("--%c",temp->data);			//for printing alpha chain
+		temp = temp->next;				//Transversing through the nucleotides
 	}
 	printf("\n");
-	while(temp2 != NULL){
+	temp = head;
+	while(temp != NULL){
 		printf("|  ");						//for printing the links between alpha and beta chains
-		temp2 = temp2->next;
+		temp = temp->next;
 	}
 	printf("\n");
+	temp = head;
 	printf("%c",temp->link);				//for printing beta chain
 	temp = temp->next;
 	while(temp != NULL){
@@ -122,11 +113,11 @@ void printdna(dna list)			//for printing the DNA molecule
 
 }
 
-int dnalen(dna list)
+int dnalen(dna head)		//For finding the number of nucleotides in a dna molecule
 {
 	dna temp = NULL;
 	int i=1;
-	temp = list;
+	temp = head;
 	while(temp->next != NULL){
 		i = i+1;
 		temp = temp->next;
@@ -134,49 +125,52 @@ int dnalen(dna list)
 	return i;
 }
 
-void insert(dna list,char chain,int position,char nucleotide)			//chain is for specifying chain ID (alpha = A , beta = B)
+void insert(dna head,char chain,int position,char nucleotide)			//chain is for specifying chain ID (alpha = A , beta = B)
 {
-	if(chain == 'A'|| chain == 'B'){
+	if(chain == 'A'|| chain == 'B'){			//checking if chain ID is correct
 		dna temp = NULL;
 		dna add = NULL;
 		temp = (dna)malloc(sizeof(struct dnaMolecule));
 
-		int n = dnalen(list);
+		int n = dnalen(head);
 		if(position > n+1 || position <1){
 			
 			printf("Invalid operation.\n");
 		
-		}else if(position == 1){
+		}
+		//~ else if(position == 1){				//inserting at the beginning of the dna
+		
+			
+			//~ temp->next = NULL;
+			//~ if(chain == 'A'){
+			
+			//~ temp->data = nucleotide;
+			//~ temp->link = comp(nucleotide);
+			
+			//~ }else if(chain == 'B'){							//It was not working when kept in this function , so i kept it directly in the main
+			
+			//~ temp->link = nucleotide;
+			//~ temp->data = comp(nucleotide);		
+			
+			//~ }
+			//~ temp->next = head;
+			//~ head = temp;
+		//~ }
+		else{
 		
 			temp->next = NULL;
-			if(chain == 'A'){
+			if(chain == 'A'){					//Inserting the values of nucleotide  in alpha chain
 			
 			temp->data = nucleotide;
 			temp->link = comp(nucleotide);
 			
-			}else if(chain == 'B'){
+			}else if(chain == 'B'){				//Inserting the values of nucleotide in beta chain
 			
 			temp->link = nucleotide;
 			temp->data = comp(nucleotide);		
 			
 			}
-			temp->next = list;
-			list = temp;
-		}else{
-		
-			temp->next = NULL;
-			if(chain == 'A'){
-			
-			temp->data = nucleotide;
-			temp->link = comp(nucleotide);
-			
-			}else if(chain == 'B'){
-			
-			temp->link = nucleotide;
-			temp->data = comp(nucleotide);		
-			
-			}
-			add = list;
+			add = head;
 			for(int k=0;k<(position-2);k++){
 		
 				add = add->next;	
@@ -191,10 +185,10 @@ void insert(dna list,char chain,int position,char nucleotide)			//chain is for s
 	}
 }
 
-void delete(dna list,int position)
+void delete(dna head,int position)
 {
 	dna add = NULL;
-	int n = dnalen(list);
+	int n = dnalen(head);
 	
 	add = (dna)malloc(sizeof(struct dnaMolecule));
 	
@@ -202,62 +196,56 @@ void delete(dna list,int position)
 	
 		printf("Invalid Operation\n");
 	
-	}else if(position == 1 ){
-	
-		add->next =NULL;
-		add = list->next;
-		list = add;
-	
-	}else if(position == n){
-	
-		add = list;
-		for(int k = 0;k< (n - 1);k++){
-			add = add->next;
-		}
-		add->next = NULL;
-	
 	}else{
 	
-		add = list;
+		add = head;
 		for(int k = 0;k< (position -2);k++)
 			add = add->next;
 		add->next = add->next->next;
 	
 	}
 }
-void split(dna list)
+void split(dna head)
 {
 	
 	dna new;
+	dna nalpha;
+	dna nbeta;
+	int n = dnalen(head);
 	new = (dna)malloc(sizeof(struct dnaMolecule));
-	new = list;
+	new = head;
+	for (int i = 0;i < n;i++){				//breaking the alpha chain into a new one 
+	
+		new->data = nalpha->data;
+		new = new->next;
+		nalpha = nalpha->next;
+	
+	}
+	
+	for (int i = 0;i < n;i++){				//cbreaking the beta chain into a new one 
+	
+		new->link = nbeta->data;
+		new = new->next;
+		nbeta = nbeta->next;
+	
+	}
+
+	for (int i = 0;i < n;i++){				
+	
+		nalpha->link = comp(nalpha->data);
+		nalpha = nalpha->next;
+	
+	}
+	
+	for (int i = 0;i < n;i++){				
+	
+		new->link = nbeta->data;
+		new = new->next;
+		nbeta = nbeta->next;
+	
+	}
 
 }
-
-//~ int find(struct DNAid * list,int value)
-//~ {
-	//~ struct DNAid * temp = NULL;
-	//~ temp = (struct DNAid *)malloc(sizeof(struct DNAid));
-	//~ int a;
-	//~ int j = 0;
-	//~ temp = list;
-	//~ for(int i =0;i<list_len(list);i++)
-	//~ {
-		//~ if(value == temp->id)
-		//~ {
-			//~ a = i+1;
-			//~ j = 1;
-		//~ }
-		//~ temp = temp->next;
-	//~ }
-	//~ if(j == 0)
-	//~ {
-		//~ printf("DNA not found\n");
-		//~ return 0;
-	//~ }
-	//~ else
-		//~ return a+1;
-//~ }
 
 int main()
 {
@@ -265,7 +253,7 @@ int main()
 		dna dnaid[30];     //Array for storing DNA molecule ID's
 		int i;
 		int count = 0;
-	start:					//for goto function , To comeback to the menu after the below functions are completed
+	start:					//for goto function , To comeback to the menu after any one of the below functions is completed
 		
 		printf("****************************************\n");
 		printf("Menu:\n");
@@ -278,7 +266,7 @@ int main()
 		printf("****************************************\n");
 		printf("Select any option - \n");
 		scanf("%d",&i);
-		if (i == 1){
+		if (i == 1){				//For creating the dna moleculse
 			int in;
 			char s;
 			printf("Enter number of nucleotides : ");
@@ -286,17 +274,16 @@ int main()
 			printf("Select chain (alpha = A , beta = B) : ");
 			scanf(" %c",&s);
 			//~ if(s != 'A' || s != 'B'){
-				//~ printf("Invalid chain ID (Choose 'A' or 'B') \n");
+				//~ printf("Invalid chain ID (Choose  'A' or 'B') \n");
 				//~ goto start;
 			//~ }
 			dnaid[count] = createdna(in,s);
-			printf("DNA%d Created : \n",count);
-			printf("ID = %d",count);
+			printf("DNA%d Created (ID = %d): \n",count,count);
 			printdna(dnaid[count]);
 			printf("\n");
 			count++;
 			goto start;
-		}else if (i == 2){
+		}else if (i == 2){				//For inserting a nucleotide
 			 
 			int id;
 			char cid;
@@ -306,21 +293,46 @@ int main()
 			scanf("%d",&id);
 			printf("Select Chain ID (alpha = A , beta = B): ");
 			scanf(" %c",&cid);
-			if(cid != 'A' || cid != 'B'){
-				printf("Invalid chain ID");
-				goto start;
-			}
+			//~ if(cid != 'A' || cid != 'B'){
+				//~ printf("Invalid chain ID");
+				//~ goto start;
+			//~ }
 			printf("Select position to insert : ");
 			scanf("%d",&p);
 			printf("Select Nuceleotide to insert : ");
 			scanf(" %c",&n);
-			insert(dnaid[id],cid,p,n);
-			printf("DNA%d: \n",id);
-			printdna(dnaid[id]);
-			printf("\n");
-			goto start;
+			if(p== 1){				//For inserting at the beginning
+				
+				dna temp = NULL;
+				temp = (dna)malloc(sizeof(struct dnaMolecule));
+				temp->next = NULL;
+				if(cid == 'A'){		//insering in alpha chain
+				
+					temp->data = n;
+					temp->link = comp(n);
+				
+				}else if(cid == 'B'){		//insering in beta chain
+				
+					temp->link = n;
+					temp->data = comp(n);		
+				
+				}
+				temp->next = dnaid[id];
+				dnaid[id] = temp;
+				printf("DNA%d: \n",id);				
+				printdna(dnaid[id]);
+				printf("\n");
+				goto start;
+			}else{
+				
+				insert(dnaid[id],cid,p,n);
+				printf("DNA%d: \n",id);
+				printdna(dnaid[id]);
+				printf("\n");
+				goto start;
+			}
 			
-		}else if (i == 3){
+		}else if (i == 3){				//For deleting a nucleotide pair
 			
 			int id;
 			int p;
@@ -329,13 +341,40 @@ int main()
 			scanf("%d",&id);
 			printf("Select position to delete : ");
 			scanf("%d",&p);
-			delete(dnaid[id],p);
-			printf("DNA%d: \n",id);
-			printdna(dnaid[id]);
-			printf("\n");
-			goto start;
+			if(p == 1){				//For deleting the first nucleotide
+				
+				dna add = NULL;
+				add = (dna)malloc(sizeof(struct dnaMolecule));
+				add->next =NULL;
+				add = dnaid[id]->next;
+				dnaid[id] = add;
+				printf("DNA%d: \n",id);
+				printdna(dnaid[id]);
+				printf("\n");
+				goto start;
+			}else if(p == dnalen(dnaid[id])){		//For deleting the last nucleotide pair
+				
+				dna add = NULL;
+				add = (dna)malloc(sizeof(struct dnaMolecule));
+				add = dnaid[id];
+				for(int k = 0;k< (dnalen(dnaid[id]) - 2);k++){
+					add = add->next;
+				}
+				add->next = NULL;
+				printf("DNA%d: \n",id);
+				printdna(dnaid[id]);
+				printf("\n");
+				goto start;
+	
+			}else{				
+				delete(dnaid[id],p);
+				printf("DNA%d: \n",id);
+				printdna(dnaid[id]);
+				printf("\n");
+				goto start;
+			}
 		
-		}else if (i == 5){
+		}else if (i == 5){			//For printing a dna molecule
 			
 			int id;
 
@@ -345,7 +384,7 @@ int main()
 			printdna(dnaid[id]);
 			printf("\n");
 			goto start;
-		}else if (i == 6){
+		}else if (i == 6){			//For printing all the dna molecules 
 			
 			for(int j = 0;j<count;j++){
 				printf("DNA%d: ",j);
@@ -357,6 +396,10 @@ int main()
 			printf("\n");
 			goto start;
 		
+		}else{
+			
+			printf("Please enter a valid number");
+			goto start;
 		}
 
 }
