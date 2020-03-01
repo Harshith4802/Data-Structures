@@ -205,54 +205,59 @@ void delete(dna head,int position)
 	
 	}
 }
-void split(dna head)
+dna split(dna head)
 {
-	
-	dna new;
-	dna nalpha;
+	dna temp;
 	dna nbeta;
+	dna beta;
+	temp = NULL;
+	
+	beta = (dna)malloc(sizeof(struct dnaMolecule));
+	nbeta = (dna)malloc(sizeof(struct dnaMolecule));
+	
 	int n = dnalen(head);
-	new = (dna)malloc(sizeof(struct dnaMolecule));
-	new = head;
-	for (int i = 0;i < n;i++){				//breaking the alpha chain into a new one 
+	temp = head;
+	nbeta = beta;
 	
-		new->data = nalpha->data;
-		new = new->next;
-		nalpha = nalpha->next;
-	
-	}
-	
-	for (int i = 0;i < n;i++){				//cbreaking the beta chain into a new one 
-	
-		new->link = nbeta->data;
-		new = new->next;
+	while(temp != NULL){
+		nbeta->next = (dna)malloc(sizeof(struct dnaMolecule));
+		nbeta->link = temp->link ;
+		temp->link = 'NULL';				//Breaking out the beta chain of the old one
+		temp = temp->next;
 		nbeta = nbeta->next;
-	
 	}
 
-	for (int i = 0;i < n;i++){				
+	nbeta = beta;
+
 	
-		nalpha->link = comp(nalpha->data);
-		nalpha = nalpha->next;
-	
-	}
-	
-	for (int i = 0;i < n;i++){				
-	
-		new->link = nbeta->data;
-		new = new->next;
+	for (int i = 0;i < n;i++){				//creating the alpha chain for the newly broken beta chain
+		
+		nbeta->data = comp(nbeta->link);
 		nbeta = nbeta->next;
+		if(i == n-2){
+			nbeta->next = NULL;
+		}
 	
 	}
+	
+	temp = head;
+	
+	while(temp != NULL){				//creating back the beta chain for the old one
+		temp->link = comp(temp->data);
+		temp = temp->next;
+	}
+ 
+	
+	return beta;
 
 }
 
 int main()
 {
-	
+		printf("All the written functions are case sensitive(Only capital letters allowed).Please switch ON your caps lock.\n");
 		dna dnaid[30];     //Array for storing DNA molecule ID's
 		int i;
-		int count = 0;
+		int count = 0;		//For storing the number of dna's created
 	start:					//for goto function , To comeback to the menu after any one of the below functions is completed
 		
 		printf("****************************************\n");
@@ -266,17 +271,22 @@ int main()
 		printf("****************************************\n");
 		printf("Select any option - \n");
 		scanf("%d",&i);
+		
+		
+		
+		
 		if (i == 1){				//For creating the dna moleculse
 			int in;
 			char s;
 			printf("Enter number of nucleotides : ");
 			scanf("%d",&in);
+			re1:
 			printf("Select chain (alpha = A , beta = B) : ");
 			scanf(" %c",&s);
-			//~ if(s != 'A' || s != 'B'){
-				//~ printf("Invalid chain ID (Choose  'A' or 'B') \n");
-				//~ goto start;
-			//~ }
+			if(s != 'A' && s != 'B'){
+				printf("Invalid chain ID (Choose  'A' or 'B') \n");
+				goto re1;
+			}
 			dnaid[count] = createdna(in,s);
 			printf("DNA%d Created (ID = %d): \n",count,count);
 			printdna(dnaid[count]);
@@ -284,23 +294,44 @@ int main()
 			count++;
 			goto start;
 		}else if (i == 2){				//For inserting a nucleotide
-			 
+			
 			int id;
 			char cid;
 			int p;
 			char n;
+			re_0:
 			printf("Select DNA Molecule ID :");
 			scanf("%d",&id);
+			if (id > count-1){		//If wrong dna id is entered
+			
+				printf("DNA not found.\n");
+				goto re_0;
+			}
+			re2_1:
 			printf("Select Chain ID (alpha = A , beta = B): ");
 			scanf(" %c",&cid);
-			//~ if(cid != 'A' || cid != 'B'){
-				//~ printf("Invalid chain ID");
-				//~ goto start;
-			//~ }
+			if(cid != 'A' && cid != 'B'){
+				printf("Invalid chain ID.Enter A or B\n");
+				goto re2_1;
+			}
+			re2_2:
 			printf("Select position to insert : ");
 			scanf("%d",&p);
+			int no = dnalen(dnaid[id]);
+			if(p < 1 || p > no+1){
+	
+				printf("Invalid Operation\n");
+				goto re2_2;
+			}
+			re2_3:
 			printf("Select Nuceleotide to insert : ");
 			scanf(" %c",&n);
+			if(check(n)==0){
+
+				printf("Invalid Nucleotide.Enter A or G or C or T\n");
+				goto re2_3;
+			}
+			
 			if(p== 1){				//For inserting at the beginning
 				
 				dna temp = NULL;
@@ -339,8 +370,21 @@ int main()
 			
 			printf("Select DNA Molecule ID :");
 			scanf("%d",&id);
+			re3_0:
+			if (id > count-1){		//If wrong dna id is entered
+			
+				printf("DNA not found.\n");
+				goto re3_0;
+			}
+			re3_1:
 			printf("Select position to delete : ");
 			scanf("%d",&p);
+			int no = dnalen(dnaid[id]);
+			if(p < 1 || p > no+1){
+	
+				printf("Invalid Operation.Position is between 1 and %d. \n",no );
+				goto re3_1;
+			}
 			if(p == 1){				//For deleting the first nucleotide
 				
 				dna add = NULL;
@@ -373,17 +417,39 @@ int main()
 				printf("\n");
 				goto start;
 			}
+			
+		}else if (i == 4){
+			
+			int id;
+			printf("Select DNA Molecule ID :");
+			scanf("%d",&id);
+			if (id > count-1){		//If wrong dna id is entered
+			
+				printf("DNA not found.\n");
+				goto start;
+			}
+			dnaid[count] = split(dnaid[id]);
+			printdna(split(dnaid[id]));
+			count++;
+			printf("\n");
+			goto start;
+			
 		
 		}else if (i == 5){			//For printing a dna molecule
 			
 			int id;
-
 			printf("Select DNA Molecule ID :");
 			scanf("%d",&id);
-			printf("DNA%d: \n",id);
-			printdna(dnaid[id]);
-			printf("\n");
-			goto start;
+			if (id > count-1){		//If wrong dna id is entered
+			
+				printf("DNA not found.\n");
+				goto start;
+			}else{
+				printf("DNA%d: \n",id);
+				printdna(dnaid[id]);
+				printf("\n");
+				goto start;
+			}
 		}else if (i == 6){			//For printing all the dna molecules 
 			
 			for(int j = 0;j<count;j++){
@@ -400,6 +466,6 @@ int main()
 			
 			printf("Please enter a valid number");
 			goto start;
-		}
+		} 
 
 }
